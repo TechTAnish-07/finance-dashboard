@@ -4,6 +4,8 @@ import com.example.finance_dashboard.DTO.Role;
 import com.example.finance_dashboard.DTO.Status;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,8 +15,7 @@ import java.util.List;
 
 @Entity
 @Data
-@lombok.NoArgsConstructor
-@lombok.AllArgsConstructor
+
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
