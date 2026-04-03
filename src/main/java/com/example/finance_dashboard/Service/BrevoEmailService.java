@@ -42,7 +42,7 @@ public class BrevoEmailService implements EmailService {
     @Async
     @Transactional
     @Override
-    public void sendLoginLink(Long userId) {
+    public void sendLoginLink(Long userId , String password) {
 
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -51,12 +51,11 @@ public class BrevoEmailService implements EmailService {
         String username          = user.getUsername();
         String email             = user.getEmail();
         String role              = user.getRole().toString();
-        String temporaryPassword = generateTemporaryPassword();
+        String tempPassword      = user.getPassword();
         String loginLink         = frontendUrl + "/login";
-        String hashedPassword = passwordEncoder.encode(temporaryPassword);
-        user.setPassword(hashedPassword);
 
-        sendViaBrevo(username, email, role, temporaryPassword, loginLink);
+
+        sendViaBrevo(username, email, role, tempPassword, loginLink);
     }
 
 

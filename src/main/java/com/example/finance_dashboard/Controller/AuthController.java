@@ -6,6 +6,7 @@ import com.example.finance_dashboard.DTO.auth.LoginRequest;
 import com.example.finance_dashboard.DTO.auth.RefreshTokenRequest;
 import com.example.finance_dashboard.Service.AuthService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,16 +31,13 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request));
     }
 
-//      // have to update
-//    @PostMapping("/create-user")
-//    public ResponseEntity<String>createUser(@RequestBody CreateAdminReq createAdminReq,
-//                                        Principal principal){
-//
-//        return ResponseEntity.ok(authService.createAdmin(createAdminReq, principal));
-//
-//    }
-//
+    @PostMapping("/create-admin")
+    @PreAuthorize("hasRole('SUPERADMIN')")
+    public ResponseEntity<String>createAdmin(@RequestBody CreateAdminReq createAdminReq,
+                                        Principal principal){
+        return ResponseEntity.ok(authService.createAdmin(createAdminReq, principal));
 
+    }
 
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshTokenRequest request) {

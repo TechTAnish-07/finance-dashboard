@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class CreateAdminReq {
     private String email;
+    private String name;
     private String organizationName;
     private Role role;
 }

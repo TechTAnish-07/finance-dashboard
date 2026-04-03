@@ -6,7 +6,9 @@ import com.example.finance_dashboard.DTO.auth.AuthResponse;
 import com.example.finance_dashboard.DTO.auth.CreateAdminReq;
 import com.example.finance_dashboard.DTO.auth.LoginRequest;
 import com.example.finance_dashboard.DTO.auth.RefreshTokenRequest;
+import com.example.finance_dashboard.Entity.Organizations;
 import com.example.finance_dashboard.Entity.User;
+import com.example.finance_dashboard.Repository.OrganisationRepo;
 import com.example.finance_dashboard.Repository.UserRepo;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,11 +18,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 public class AuthService {
 
     private final UserRepo userRepo;
+    private final OrganisationRepo organisationRepo;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService customUserDetailsService;
@@ -31,13 +36,16 @@ public class AuthService {
                        AuthenticationManager authenticationManager,
                        CustomUserDetailsService customUserDetailsService,
                        JwtService jwtService,
-                       EmailService emailService) {
+                       EmailService emailService,
+                       OrganisationRepo organisationRepo
+                       ) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.customUserDetailsService = customUserDetailsService;
         this.jwtService = jwtService;
         this.emailService = emailService;
+        this.organisationRepo = organisationRepo;
     }
 
 
@@ -95,16 +103,29 @@ public class AuthService {
     ){
         User user = userRepo.findByEmail(principal.getName()).orElseThrow(()
                 -> new BadCredentialsException("user not found"));
+
         if(user.getRole() != Role.SUPERADMIN){
             throw new BadCredentialsException("invalid role");
         }
+        String tempPassword = UUID.randomUUID().toString().substring(0, 8);
+
+        Organizations org = new Organizations();
+        org.setName(createAdminReq.getOrganizationName());
+        org.setStatus(Status.ACTIVE);
+        org.setCreatedDate(LocalDateTime.now());
+        organisationRepo.save(org);
+
 
         User u1 = new User();
         u1.setEmail(createAdminReq.getEmail());
+        u1.setName(createAdminReq.getName());
+        u1.setPassword(passwordEncoder.encode(tempPassword));
         u1.setRole(createAdminReq.getRole());
-        userRepo.save(u1);
         u1.setStatus(Status.ACTIVE);
-        emailService.sendLoginLink(u1.getId());
+        u1.setCreatedAt(LocalDateTime.now());
+        u1.setUpdatedAt(LocalDateTime.now());
+        userRepo.save(u1);
+        emailService.sendLoginLink(u1.getId() , tempPassword);
 
 return "Successfully Admin Created";
     }

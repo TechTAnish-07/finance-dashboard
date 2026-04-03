@@ -8,5 +8,5 @@ public interface EmailService {
 
     @Async
     @Transactional
-    void sendLoginLink(Long userId);
+    void sendLoginLink(Long userId, String tempPassword);
 }

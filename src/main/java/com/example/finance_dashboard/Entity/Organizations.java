@@ -8,7 +8,8 @@ import jakarta.persistence.Table;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
 
 @Entity
 @lombok.Getter
@@ -22,7 +23,7 @@ public class Organizations {
     private Long id;
     private String name;
     private Status status;
-    private Date createdDate;
-    private Date statusUpdatedDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime statusUpdatedDate;
 
 }
