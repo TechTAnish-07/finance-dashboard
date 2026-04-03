@@ -25,17 +25,19 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtService jwtService;
-
+    private final EmailService emailService;
     public AuthService(UserRepo userRepo,
                        PasswordEncoder passwordEncoder,
                        AuthenticationManager authenticationManager,
                        CustomUserDetailsService customUserDetailsService,
-                       JwtService jwtService) {
+                       JwtService jwtService,
+                       EmailService emailService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.customUserDetailsService = customUserDetailsService;
         this.jwtService = jwtService;
+        this.emailService = emailService;
     }
 
 
@@ -50,7 +52,9 @@ public class AuthService {
 
         User user = userRepo.findByEmail(request.email().trim().toLowerCase())
                 .orElseThrow(() -> new BadCredentialsException("invalid credentials"));
-
+         if(user.getStatus() != Status.ACTIVE) {
+             throw new BadCredentialsException("User is not active");
+         }
         String accessToken = jwtService.generateToken(
                 user.getEmail(),
                 user.getName(),
@@ -94,13 +98,13 @@ public class AuthService {
         if(user.getRole() != Role.SUPERADMIN){
             throw new BadCredentialsException("invalid role");
         }
-        String password = createAdminReq.getPassword();
-        String newPassword = passwordEncoder.encode(password);
+
         User u1 = new User();
         u1.setEmail(createAdminReq.getEmail());
-        u1.setPassword(newPassword);
         u1.setRole(createAdminReq.getRole());
         userRepo.save(u1);
+        u1.setStatus(Status.ACTIVE);
+        emailService.sendLoginLink(u1.getId());
 
 return "Successfully Admin Created";
     }

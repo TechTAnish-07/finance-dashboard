@@ -30,12 +30,16 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request));
     }
 
-    @PostMapping("/create-admin")
-    public ResponseEntity<String>createAdmin(@RequestBody CreateAdminReq createAdminReq,
-                                        Principal principal){
-        return ResponseEntity.ok(authService.createAdmin(createAdminReq, principal));
+//      // have to update
+//    @PostMapping("/create-user")
+//    public ResponseEntity<String>createUser(@RequestBody CreateAdminReq createAdminReq,
+//                                        Principal principal){
+//
+//        return ResponseEntity.ok(authService.createAdmin(createAdminReq, principal));
+//
+//    }
+//
 
-    }
 
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshTokenRequest request) {

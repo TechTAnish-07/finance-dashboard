@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -36,11 +37,27 @@ public class User implements UserDetails {
     @JoinColumn(name = "orgId")
     private Organizations organizations;
 
+    private boolean isFirstLogin ;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public User(String email, String name, String password, Role role, Status status) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        this.role = role;
+        this.status = status;
+        this.isFirstLogin = true;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public User() {
+
+    }
 
     @PrePersist
     protected void onCreate() {
