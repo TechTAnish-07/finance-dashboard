@@ -1,6 +1,6 @@
 package com.example.finance_dashboard.Entity;
 
-import com.example.finance_dashboard.DTO.Type;
+import com.example.finance_dashboard.DTO.FinanceRecord.Type;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
