@@ -12,10 +12,7 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@lombok.Getter
-@lombok.Setter
 @Data
-@lombok.NoArgsConstructor
 @Table(name = "organizations")
 public class Organizations {
     @Id

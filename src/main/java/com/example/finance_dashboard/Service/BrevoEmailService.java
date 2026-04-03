@@ -51,11 +51,11 @@ public class BrevoEmailService implements EmailService {
         String username          = user.getUsername();
         String email             = user.getEmail();
         String role              = user.getRole().toString();
-        String tempPassword      = user.getPassword();
+
         String loginLink         = frontendUrl + "/login";
 
 
-        sendViaBrevo(username, email, role, tempPassword, loginLink);
+        sendViaBrevo(username, email, role, password, loginLink);
     }
 
 

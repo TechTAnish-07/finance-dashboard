@@ -2,10 +2,7 @@ package com.example.finance_dashboard.Service;
 
 import com.example.finance_dashboard.DTO.Role;
 import com.example.finance_dashboard.DTO.Status;
-import com.example.finance_dashboard.DTO.auth.AuthResponse;
-import com.example.finance_dashboard.DTO.auth.CreateAdminReq;
-import com.example.finance_dashboard.DTO.auth.LoginRequest;
-import com.example.finance_dashboard.DTO.auth.RefreshTokenRequest;
+import com.example.finance_dashboard.DTO.auth.*;
 import com.example.finance_dashboard.Entity.Organizations;
 import com.example.finance_dashboard.Entity.User;
 import com.example.finance_dashboard.Repository.OrganisationRepo;
@@ -119,16 +116,64 @@ public class AuthService {
         User u1 = new User();
         u1.setEmail(createAdminReq.getEmail());
         u1.setName(createAdminReq.getName());
+        u1.setOrganizations(org);
         u1.setPassword(passwordEncoder.encode(tempPassword));
-        u1.setRole(createAdminReq.getRole());
+        u1.setRole(Role.ADMIN);
         u1.setStatus(Status.ACTIVE);
         u1.setCreatedAt(LocalDateTime.now());
         u1.setUpdatedAt(LocalDateTime.now());
         userRepo.save(u1);
         emailService.sendLoginLink(u1.getId() , tempPassword);
 
-return "Successfully Admin Created";
+     return "Successfully Admin Created";
     }
+
+    public String createUser(CreateUserReq req, Principal principal) {
+
+
+        User admin = userRepo.findByEmail(principal.getName())
+                .orElseThrow(() -> new BadCredentialsException("Admin not found"));
+
+        if (admin.getRole() != Role.ADMIN) {
+            throw new BadCredentialsException("Only ADMIN can create users");
+        }
+
+
+        Organizations org = admin.getOrganizations();
+        if (org == null) {
+            throw new RuntimeException("Admin has no organization assigned");
+        }
+
+         if (req.getRole() == Role.ADMIN || req.getRole() == Role.SUPERADMIN) {
+            throw new BadCredentialsException("ADMIN can only create ANALYST or VIEWER");
+        }
+
+        if (userRepo.existsByEmail(req.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+
+
+        String tempPassword = UUID.randomUUID().toString().substring(0, 8);
+
+
+        User newUser = new User();
+        newUser.setEmail(req.getEmail());
+        newUser.setName(req.getName());
+        newUser.setPassword(passwordEncoder.encode(tempPassword)); // hashed in DB
+        newUser.setRole(req.getRole());
+        newUser.setStatus(Status.ACTIVE);
+        newUser.setOrganizations(org);
+        newUser.setIsFirstLogin(true);
+        newUser.setCreatedAt(LocalDateTime.now());
+        newUser.setUpdatedAt(LocalDateTime.now());
+        userRepo.save(newUser);
+
+
+        emailService.sendLoginLink(newUser.getId(), tempPassword);
+
+        return "User created successfully";
+    }
+
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
     }

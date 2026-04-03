@@ -4,10 +4,8 @@ import com.example.finance_dashboard.DTO.Role;
 import com.example.finance_dashboard.DTO.Status;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
@@ -16,14 +14,16 @@ import java.util.List;
 
 @Entity
 @Data
-
 @Table(name = "users")
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private String name;
+
     private String password;
 
     @Column(unique = true)
@@ -34,13 +34,15 @@ public class User implements UserDetails {
     private Role role;
 
     @ManyToOne
-    @JoinColumn(name = "orgId")
+    @JoinColumn(name = "org_id")
     private Organizations organizations;
 
-    private boolean isFirstLogin ;
+    private boolean isFirstLogin;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -55,9 +57,7 @@ public class User implements UserDetails {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public User() {
-
-    }
+    public User() {}
 
     @PrePersist
     protected void onCreate() {
@@ -70,21 +70,19 @@ public class User implements UserDetails {
         updatedAt = LocalDateTime.now();
     }
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-    }
-
-
-    @Override
-    public String getUsername() {
-        return email;
+        return List.of(
+                new SimpleGrantedAuthority("ROLE_" + role.name())
+        );
     }
 
     @Override
-    public String getPassword() {
-        return password;
-    }
+    public String getUsername() { return email; }
+
+    @Override
+    public String getPassword() { return password; }
 
     @Override public boolean isAccountNonExpired() { return true; }
     @Override public boolean isAccountNonLocked() { return true; }
@@ -93,5 +91,9 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return status == Status.ACTIVE;
+    }
+
+    public void setIsFirstLogin(boolean b) {
+        this.isFirstLogin = b;
     }
 }

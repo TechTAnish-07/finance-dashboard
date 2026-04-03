@@ -1,9 +1,6 @@
 package com.example.finance_dashboard.Controller;
 
-import com.example.finance_dashboard.DTO.auth.AuthResponse;
-import com.example.finance_dashboard.DTO.auth.CreateAdminReq;
-import com.example.finance_dashboard.DTO.auth.LoginRequest;
-import com.example.finance_dashboard.DTO.auth.RefreshTokenRequest;
+import com.example.finance_dashboard.DTO.auth.*;
 import com.example.finance_dashboard.Service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,9 +35,20 @@ public class AuthController {
         return ResponseEntity.ok(authService.createAdmin(createAdminReq, principal));
 
     }
+    @PostMapping("/create-user")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String>createUser(@RequestBody CreateUserReq createUserReq,
+                                             Principal principal){
+        return ResponseEntity.ok(authService.createUser(createUserReq, principal));
+
+    }
+
+
 
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshTokenRequest request) {
         return ResponseEntity.ok(authService.refresh(request));
     }
+
+
 }
