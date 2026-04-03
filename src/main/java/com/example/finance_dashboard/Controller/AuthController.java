@@ -2,12 +2,10 @@ package com.example.finance_dashboard.Controller;
 
 import com.example.finance_dashboard.DTO.auth.*;
 import com.example.finance_dashboard.Service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -44,6 +42,13 @@ public class AuthController {
     }
 
 
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(
+            @Valid @RequestBody ChangePasswordReq req,
+            Principal principal
+    ) {
+        return ResponseEntity.ok(authService.changePassword(req, principal));
+    }
 
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshTokenRequest request) {

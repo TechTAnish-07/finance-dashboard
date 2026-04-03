@@ -173,7 +173,35 @@ public class AuthService {
 
         return "User created successfully";
     }
+    public String changePassword(ChangePasswordReq req, Principal principal) {
 
+
+        User user = userRepo.findByEmail(principal.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+
+        if (!passwordEncoder.matches(req.getOldPassword(), user.getPassword())) {
+            throw new BadCredentialsException("Old password is incorrect");
+        }
+
+        if (!req.getNewPassword().equals(req.getConfirmPassword())) {
+            throw new RuntimeException("New password and confirm password do not match");
+        }
+
+
+        if (passwordEncoder.matches(req.getNewPassword(), user.getPassword())) {
+            throw new RuntimeException("New password cannot be same as old password");
+        }
+
+
+        user.setPassword(passwordEncoder.encode(req.getNewPassword()));
+
+        user.setIsFirstLogin(false);
+
+        userRepo.save(user);
+
+        return "Password changed successfully";
+    }
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
     }

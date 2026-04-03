@@ -77,7 +77,8 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
 
-                        .requestMatchers("/auth/create-admin").hasRole("SUPERADMIN")  // specific first
+                        .requestMatchers("/auth/create-admin").hasRole("SUPERADMIN")
+                        .requestMatchers("/auth/create-user").hasRole("ADMIN")
 
 
                         .requestMatchers("/auth/login").permitAll()
