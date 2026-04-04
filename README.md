@@ -344,7 +344,7 @@ mvn spring-boot:run
 
 ### 5. Access Swagger UI
 ```
-http://localhost:8080/swagger-ui/index.html
+https://finance-dashboard-production-b11b.up.railway.app/swagger-ui/index.html
 ```
 
 ---
