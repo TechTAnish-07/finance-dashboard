@@ -2,6 +2,7 @@ package com.example.finance_dashboard.Controller;
 
 import com.example.finance_dashboard.Service.DashboardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,10 +15,9 @@ import java.security.Principal;
 @RequestMapping("/dashboard")
 @RequiredArgsConstructor
 public class DashboardController {
-
+  @Autowired
     private final DashboardService dashboardService;
 
-    // ✅ Full summary — one API call returns everything
     @GetMapping("/summary")
     @PreAuthorize("hasAnyRole('ADMIN', 'ANALYST')")
     public ResponseEntity<?> getSummary(Principal principal) {

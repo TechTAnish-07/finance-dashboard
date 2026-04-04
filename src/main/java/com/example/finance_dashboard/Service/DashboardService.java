@@ -114,10 +114,10 @@ public class DashboardService {
 
         List<FinancialRecord> recentRecords = isAdmin
                 ? financialRecordRepo
-                .findTop10ByOrganizationsIdAndIsDeletedFalse(
+                .findTop10ByOrganization_IdAndIsDeletedFalse(
                         orgId, Sort.by("date").descending())
                 : financialRecordRepo
-                .findTop10ByUserIdAndIsDeletedFalse(
+                .findTop10ByOrganization_IdAndIsDeletedFalse(
                         userId, Sort.by("date").descending());
 
         List<FinancialRecordResponse> recentActivity = recentRecords.stream()

@@ -4,6 +4,11 @@ server:
 app:
   frontend-url: ${FRONTEND_URL:http://localhost:3000}
 
+spring doc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
 spring:
   application:
     name: finance-dashboard

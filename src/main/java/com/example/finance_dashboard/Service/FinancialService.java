@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class FinancialService {
@@ -98,7 +96,7 @@ public class FinancialService {
 
         if (loggedInUser.getRole() == Role.ADMIN) {
             records = financeRepo
-                    .findByOrganizationsIdAndIsDeletedFalse(
+                    .findByOrganization_IdAndIsDeletedFalse(
                             loggedInUser.getOrganizations().getId(),
                             pageable
                     );
