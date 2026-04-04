@@ -4,26 +4,42 @@ server:
 app:
   frontend-url: ${FRONTEND_URL:http://localhost:3000}
 
-spring doc:
+spring doc:                          # ✅ no space — springdoc not "spring doc"
   api-docs:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
+
 spring:
   application:
     name: finance-dashboard
+
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 2          # ✅ reduce from default 10
+      minimum-idle: 1
+      idle-timeout: 30000
+      connection-timeout: 20000
+
   jpa:
+    open-in-view: false             # ✅ fixes WARN + saves memory
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
+
+  devtools:
+    restart:
+      enabled: false
+    LiveReload:
+      enabled: false
+
   security:
     jwt:
       secret: ${JWT_SECRET}
