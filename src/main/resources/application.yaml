@@ -9,6 +9,11 @@ springdoc:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
+    servers:
+      - url: https://finance-dashboard-production-b11b.up.railway.app
+        description: Production
+      - url: http://localhost:8080
+        description: Local
 
 spring:
   application:

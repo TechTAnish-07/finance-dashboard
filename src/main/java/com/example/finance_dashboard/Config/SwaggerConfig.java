@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,6 +16,14 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
+                .addServersItem(new Server()
+                        .url("https://finance-dashboard-production-b11b.up.railway.app")
+                        .description("Production")
+                )
+                .addServersItem(new Server()
+                        .url("http://localhost:8080")
+                        .description("Local")
+                )
                 .info(new Info()
                         .title("Finance Dashboard API")
                         .version("1.0.0")
@@ -25,11 +34,11 @@ public class SwaggerConfig {
                     
                     | Field    | Value                        |
                     |----------|------------------------------|
-                    | Email    | `patidar29tanish@gmail.com`           |
+                    | Email    | `patidar29tanish@gmail.com`  |
                     | Password | `123456789`                  |
                     
                     **Steps:**
-                    1. Call `POST /api/auth/login` with the credentials above
+                    1. Call `POST /auth/login` with the credentials above
                     2. Copy the JWT token from the response
                     3. Click **Authorize** 🔒 and paste: `Bearer <your_token>`
                     """)
@@ -38,10 +47,8 @@ public class SwaggerConfig {
                                 .email("patidartanish31@gmail.com")
                         )
                 )
-                // ✅ Adds lock icon on every endpoint
                 .addSecurityItem(new SecurityRequirement()
                         .addList("Bearer Authentication"))
-                // ✅ Adds Authorize button at top of Swagger UI
                 .components(new Components()
                         .addSecuritySchemes("Bearer Authentication",
                                 new SecurityScheme()
