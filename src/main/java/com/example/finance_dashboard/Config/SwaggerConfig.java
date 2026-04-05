@@ -18,7 +18,21 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("Finance Dashboard API")
                         .version("1.0.0")
-                        .description("Role based finance management system")
+                        .description("""
+                    ## 🔐 Demo Credentials
+                    
+                    Use these credentials to test the API:
+                    
+                    | Field    | Value                        |
+                    |----------|------------------------------|
+                    | Email    | `patidar29tanish@gmail.com`           |
+                    | Password | `123456789`                  |
+                    
+                    **Steps:**
+                    1. Call `POST /api/auth/login` with the credentials above
+                    2. Copy the JWT token from the response
+                    3. Click **Authorize** 🔒 and paste: `Bearer <your_token>`
+                    """)
                         .contact(new Contact()
                                 .name("Tanish Patidar")
                                 .email("patidartanish31@gmail.com")
