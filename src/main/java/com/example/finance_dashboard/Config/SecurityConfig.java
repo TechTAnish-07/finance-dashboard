@@ -42,21 +42,24 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
 
-        // ✅ List ports explicitly
-        config.setAllowedOrigins(Arrays.asList(
+        // ✅ Use setAllowedOriginPatterns instead of setAllowedOrigins (supports wildcards)
+        config.setAllowedOriginPatterns(Arrays.asList(
                 "http://localhost:3000",
-                "http://localhost:5173",   // Vite
-                "http://localhost:8080"
+                "http://localhost:5173",
+                "http://localhost:8080",
+                "https://*.up.railway.app",
+                "https://*.railway.app"
         ));
 
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        config.setExposedHeaders(List.of("Authorization"));
+        config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
