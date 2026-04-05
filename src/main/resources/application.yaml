@@ -5,15 +5,14 @@ app:
   frontend-url: ${FRONTEND_URL:http://localhost:3000}
 
 springdoc:
-  api-docs:
-    path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
-    servers:
-      - url: https://finance-dashboard-production-b11b.up.railway.app
-        description: Production
-      - url: http://localhost:8080
-        description: Local
+    try-it-out-enabled: true
+    display-request-duration: true
+  api-docs:
+    path: /v3/api-docs
+  override-with-generic-response: false
+
 
 spring:
   application:

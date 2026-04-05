@@ -2,7 +2,7 @@ package com.example.finance_dashboard.Config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Contact;
+import org.springdoc.core.customizers.OpenApiCustomizer;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
@@ -16,11 +16,11 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .addServersItem(new Server()
+                .addServersItem(new io.swagger.v3.oas.models.servers.Server()
                         .url("https://finance-dashboard-production-b11b.up.railway.app")
                         .description("Production")
                 )
-                .addServersItem(new Server()
+                .addServersItem(new io.swagger.v3.oas.models.servers.Server()
                         .url("http://localhost:8080")
                         .description("Local")
                 )
@@ -28,35 +28,41 @@ public class SwaggerConfig {
                         .title("Finance Dashboard API")
                         .version("1.0.0")
                         .description("""
-                    ## 🔐 Demo Credentials
-                    
-                    Use these credentials to test the API:
-                    
-                    | Field    | Value                        |
-                    |----------|------------------------------|
-                    | Email    | `patidar29tanish@gmail.com`  |
-                    | Password | `123456789`                  |
-                    
-                    **Steps:**
-                    1. Call `POST /auth/login` with the credentials above
-                    2. Copy the JWT token from the response
-                    3. Click **Authorize** 🔒 and paste: `Bearer <your_token>`
-                    """)
-                        .contact(new Contact()
-                                .name("Tanish Patidar")
-                                .email("patidartanish31@gmail.com")
-                        )
+                                ## 🔐 Demo Credentials
+                                
+                                | Field    | Value                         |
+                                |----------|-------------------------------|
+                                | Email    | `patidar29tanish@gmail.com`   |
+                                | Password | `123456789`                   |
+                                
+                                **Steps:**
+                                1. Call `POST /auth/login` with credentials above
+                                2. Copy the JWT token from response
+                                3. Click **Authorize 🔒** → paste: `Bearer <token>`
+                                """)
                 )
-                .addSecurityItem(new SecurityRequirement()
-                        .addList("Bearer Authentication"))
+                .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
                 .components(new Components()
                         .addSecuritySchemes("Bearer Authentication",
                                 new SecurityScheme()
                                         .type(SecurityScheme.Type.HTTP)
                                         .scheme("bearer")
                                         .bearerFormat("JWT")
-                                        .description("Paste your JWT token here")
                         )
                 );
+    }
+    @Bean
+    public OpenApiCustomizer serverBaseUrlCustomizer() {
+        return openApi -> {
+            openApi.getServers().clear();
+            openApi.addServersItem(new Server()
+                    .url("https://finance-dashboard-production-b11b.up.railway.app")
+                    .description("Production")
+            );
+            openApi.addServersItem(new Server()
+                    .url("http://localhost:8080")
+                    .description("Local")
+            );
+        };
     }
 }
